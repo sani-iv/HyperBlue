@@ -4,41 +4,76 @@ A Claude Code skill for building premium, brand-aware React/Next.js frontends th
 
 Created by [Incredible Visibility](https://incrediblevisibility.com).
 
-## What it does
+## The Problem
 
-HyperBlue replaces generic AI aesthetics with market-aware, brand-calibrated design engineering. It operates in five phases:
+AI-generated frontends all look the same. You've seen it: the centered hero with a purple gradient button, Inter font everywhere, generic 3-column card grid, "John Doe" placeholder data, and that unmistakable "AI purple" glow. It looks like a template, not a brand.
 
-1. **Discovery** — Competitive landscape research, brand intake, and content strategy
-2. **Brand Token System** — Converts brand assets into a structured design token system
-3. **Core Engine** — Bias correction rules, architecture conventions, and four tunable design dials
-4. **Design Layers** — Animation personality, accessibility, responsive consistency, and component theming
-5. **Optional Extensions** — Bento grids, creative arsenal, scroll animation modules
+HyperBlue fixes this by injecting brand awareness, competitive research, and design engineering principles into every line of code Claude writes.
 
-## When to use
+## Without HyperBlue vs. With HyperBlue
 
-- Building websites, landing pages, dashboards, or web apps
-- Working with brand assets (logos, screenshots, color guidelines)
-- Matching an existing design system
-- Creating "non-generic" or "premium" UI
-- Analyzing competitor sites for design inspiration
+| | Without | With HyperBlue |
+|---|---|---|
+| **Colors** | Default purple/blue AI palette | Extracted from your brand assets and calibrated to your industry |
+| **Typography** | Inter, every time | Brand-appropriate typefaces (Geist, Satoshi, Cabinet Grotesk, etc.) |
+| **Layout** | Centered hero, 3-column cards | Asymmetric grids, split-screens, zig-zag layouts based on brand personality |
+| **Copy** | "Get Started", "Unleash the power of" | Brand-voiced microcopy that sounds like your copywriter wrote it |
+| **Placeholder data** | "John Doe", "99.99%", "$1,234" | Realistic, organic data: "Marcus Reilly", "47.2%", "$1,847.30" |
+| **Dark mode** | Colors inverted | Brand-specific dark palette (warm charcoal for luxury, navy for corporate, true dark for dev tools) |
+| **States** | Happy path only | Loading skeletons, empty states, error messages — all brand-voiced |
+| **Animations** | Generic fade-in | Personality-matched motion (refined for luxury, snappy for SaaS, bouncy for consumer) |
+
+## How It Works
+
+```
+You describe your project
+        |
+        v
+  Phase 1: DISCOVERY
+  Competitive research + brand intake + content strategy
+        |
+        v
+  Phase 2: BRAND TOKENS
+  Colors, typography, spacing, shadows, dark mode — all from YOUR brand
+        |
+        v
+  Phase 3: CORE ENGINE
+  Bias correction rules eliminate generic AI patterns
+        |
+        v
+  Phase 4: DESIGN LAYERS
+  Animation, accessibility, responsive behavior, component theming
+        |
+        v
+  Phase 5: EXTENSIONS (optional)
+  Bento grids, scroll animations, creative arsenal
+        |
+        v
+  Premium, brand-specific frontend code
+```
+
+## Requirements
+
+- [Claude Code CLI](https://docs.anthropic.com/en/docs/claude-code) installed and authenticated
+- A Claude Pro, Team, or Enterprise plan
 
 ## Installation
 
-### Claude Code (CLI)
-
-Add the skill to your project's `.claude/` directory or install it globally:
+Copy the skill file into your Claude Code skills directory:
 
 ```bash
-# Project-level
-cp hyperblue.md /path/to/your/project/.claude/skills/hyperblue.md
+# Project-level (applies to one project)
+mkdir -p .claude/skills
+cp skills/hyperblue.md /path/to/your/project/.claude/skills/hyperblue.md
 
 # Global (available in all projects)
-cp hyperblue.md ~/.claude/skills/hyperblue.md
+mkdir -p ~/.claude/skills
+cp skills/hyperblue.md ~/.claude/skills/hyperblue.md
 ```
 
-## Example Prompts
+HyperBlue activates automatically when Claude detects frontend/UI work — no slash command needed.
 
-Once installed, just describe what you need. HyperBlue activates automatically when it detects frontend/UI work.
+## Example Prompts
 
 **Start from a business description:**
 ```
@@ -72,7 +107,7 @@ not corporate. Use soft greens and generous whitespace.
 
 ## Configuration Dials
 
-HyperBlue exposes four tunable dials that adapt to brand personality:
+HyperBlue exposes four tunable dials you can set in your prompts:
 
 | Dial | Default | Range | Controls |
 |---|---|---|---|
@@ -80,6 +115,37 @@ HyperBlue exposes four tunable dials that adapt to brand personality:
 | `MOTION_INTENSITY` | 6 | 1-10 | Animation complexity and frequency |
 | `VISUAL_DENSITY` | 4 | 1-10 | Spacing, whitespace, information packing |
 | `BRAND_FIDELITY` | 7 | 1-10 | How closely output matches brand references |
+
+**Quick presets:**
+
+- **Luxury editorial** — `DESIGN_VARIANCE 9, MOTION_INTENSITY 4, VISUAL_DENSITY 2, BRAND_FIDELITY 8`
+- **SaaS dashboard** — `DESIGN_VARIANCE 5, MOTION_INTENSITY 7, VISUAL_DENSITY 8, BRAND_FIDELITY 6`
+- **Consumer app** — `DESIGN_VARIANCE 7, MOTION_INTENSITY 8, VISUAL_DENSITY 5, BRAND_FIDELITY 7`
+- **Corporate / safe** — `DESIGN_VARIANCE 3, MOTION_INTENSITY 3, VISUAL_DENSITY 5, BRAND_FIDELITY 9`
+
+## FAQ
+
+**Does it work without brand assets?**
+Yes. Give it a business description and it will research your industry's competitive landscape to inform the design direction. The more you provide (logo, colors, screenshots), the more precise the output.
+
+**What stack does it target?**
+React and Next.js with Tailwind CSS by default. It respects your existing project setup — if you're on Tailwind v3 it won't use v4 syntax, and it checks your `package.json` before importing any library.
+
+**Does it work with component libraries?**
+Yes. It skins shadcn/ui and similar libraries to match your brand tokens instead of using their defaults.
+
+**Can I use it for dashboards, not just landing pages?**
+Absolutely. Set `VISUAL_DENSITY` to 7-10 for dense, data-heavy interfaces. At high density, it replaces card-based layouts with border-separated, cockpit-style designs.
+
+**Does it handle dark mode?**
+Yes, and not with simple color inversion. It generates brand-specific dark palettes — warm charcoal for lifestyle brands, navy for corporate, true dark for developer tools.
+
+**What about accessibility?**
+WCAG 2.1 AA compliance is built in. Contrast ratios, keyboard navigation, semantic HTML, ARIA labels, and `prefers-reduced-motion` support are non-negotiable in every output.
+
+## Contributing
+
+Found a pattern HyperBlue should avoid? Have an industry-specific rule to add? PRs are welcome.
 
 ## License
 
