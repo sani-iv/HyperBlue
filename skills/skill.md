@@ -7,13 +7,15 @@ description: Build premium, brand-aware React/Next.js frontends that feel design
 
 Build premium React/Next.js interfaces calibrated to a specific brand identity, informed by competitive landscape research, and engineered to override default LLM design biases.
 
-This skill operates in five phases. Each phase feeds the next. Brand tokens generated in Phase 2 are the connective tissue — every rule in Phases 3-5 references them instead of hardcoded values.
+This skill operates in five phases. Each phase feeds the next. Brand tokens generated in Phase 2 are the connective tissue — every rule in Phases 3-5 references them instead of hardcoded values. Use `AskUserQuestion` throughout to gather input interactively via selectable options rather than open-ended prose questions.
 
 ---
 
 ## PHASE 1: DISCOVERY
 
-Before writing any code, establish the design context. This phase has three parallel tracks.
+Before writing any code, establish the design context. This phase has four tracks.
+
+**Interactive Discovery:** Throughout this phase, use the `AskUserQuestion` tool to gather user input interactively — present selectable options instead of asking open-ended questions in prose. This gives the user a faster, click-to-choose experience. Use `preview` fields when comparing visual directions (e.g., layout mockups, color palettes). Use `multiSelect: true` when choices aren't mutually exclusive. Always keep options to 2-4 per question, with clear labels and descriptions. The user can always pick "Other" for custom input.
 
 ### 1A. Competitive Landscape Research
 
@@ -28,7 +30,7 @@ When the user provides a business description (even a one-liner like "luxury per
    - Animation style (minimal, functional, cinematic, playful)
    - Content tone (formal, conversational, technical, aspirational)
    - Navigation patterns (sticky, minimal, mega-menu, sidebar)
-3. Present findings as a curated reference set. Let the user select which players feel closest to their desired positioning.
+3. Present findings as a curated reference set. Use `AskUserQuestion` to let the user interactively select which competitors feel closest to their desired positioning — present the top 3-4 competitors as selectable options (with descriptions summarizing each one's visual signature), with `multiSelect: true` so they can pick more than one.
 4. Note industry conventions AND gaps — if every competitor uses dark backgrounds, that's both a convention worth knowing and a differentiation opportunity.
 
 **The user's selections become design anchors.** They feed into token generation alongside the brand's own assets. If the user skips this step or provides no business context, proceed with brand assets alone.
@@ -42,6 +44,8 @@ Collect the user's brand materials. Accept any combination of:
 - **Color guidelines** (hex values, palette names, brand book excerpts)
 - **Font preferences** (specific typefaces or general direction)
 - **Brand personality brief** (even informal: "clean and premium" or "bold and technical")
+
+If the user hasn't provided explicit brand direction, use `AskUserQuestion` to ask about their brand personality (e.g., "Minimal & Clean", "Bold & Expressive", "Warm & Approachable", "Sharp & Technical") and their content density preference (e.g., "Airy/editorial", "Balanced", "Dense/data-heavy").
 
 When the user shares **screenshots**, extract:
 - Spacing rhythm (base unit, section gaps, component padding)
@@ -59,16 +63,54 @@ When the user shares a **logo**, extract:
 
 ### 1C. Content Strategy
 
-Establish the verbal personality that drives all generated microcopy:
+Establish the verbal personality that drives all generated microcopy. If not already clear from the brand brief, use `AskUserQuestion` to let the user pick their brand voice:
 
-- **Formal brands** → restrained, confident copy. "Begin your session" not "Let's go!"
-- **Technical brands** → direct, precise copy. "Deploy to production" not "Launch your creation"
-- **Consumer/lifestyle brands** → warm, conversational copy. "Find your next favorite" not "Browse catalog"
-- **Luxury brands** → minimal, evocative copy. "Discover" not "Shop now"
+- **Formal** → restrained, confident copy. "Begin your session" not "Let's go!"
+- **Technical** → direct, precise copy. "Deploy to production" not "Launch your creation"
+- **Conversational** → warm, friendly copy. "Find your next favorite" not "Browse catalog"
+- **Luxury** → minimal, evocative copy. "Discover" not "Shop now"
 
 Apply this voice to every generated text element: button labels, headings, empty states, error messages, loading text, tooltips, placeholder content. No more generic "Get Started" buttons or "Something went wrong" errors — every string should sound like it was written by the brand's copywriter.
 
 **Banned copy patterns** (regardless of brand): "Elevate", "Seamless", "Unleash", "Next-Gen", "Revolutionize", "Cutting-edge", "Empower", "Supercharge", "Unlock the power of". Use concrete verbs tied to what the product actually does.
+
+### 1D. Sitemap Architecture
+
+After completing competitive research and brand intake, generate an ideal sitemap for the user's website. This happens before any code is written.
+
+**Workflow:**
+1. Based on the business description, industry research, and competitor analysis, determine the optimal page structure.
+2. Present the sitemap using `AskUserQuestion` with `preview` to show the proposed structure visually (as an ASCII tree diagram) alongside alternatives. Offer 2-3 sitemap variations as options:
+   - **Minimal** — lean site with only essential pages (ideal for launches/MVPs)
+   - **Standard** — industry-appropriate page set covering expected user journeys
+   - **Comprehensive** — full-featured site with content marketing, resources, and conversion funnels
+3. Once the user selects a direction, output the finalized sitemap as a structured list:
+
+```
+/ (Homepage)
+├── /about
+├── /services
+│   ├── /services/[service-1]
+│   └── /services/[service-2]
+├── /work or /portfolio
+│   └── /work/[case-study]
+├── /blog
+│   └── /blog/[post]
+├── /contact
+└── /legal
+    ├── /privacy
+    └── /terms
+```
+
+**Sitemap principles:**
+- Pages should map to real user intents, not vanity sections. Every page earns its place by serving a navigation goal or conversion step.
+- URL slugs should be clean, lowercase, hyphenated, and SEO-friendly.
+- Group related pages under logical parents (e.g., `/services/branding`, not `/branding`).
+- For e-commerce: include category → subcategory → product hierarchy. For SaaS: include features, pricing, docs, and changelog.
+- Flag pages that need dynamic routes (e.g., blog posts, case studies, product pages) vs. static pages.
+- The sitemap informs the Next.js file-based routing structure (`app/` directory layout) when code generation begins.
+
+**The finalized sitemap becomes the structural blueprint for Phase 3.** All navigation components, internal linking, and routing are derived from it.
 
 ---
 
