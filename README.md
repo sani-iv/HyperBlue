@@ -36,6 +36,40 @@ cp hyperblue.md /path/to/your/project/.claude/skills/hyperblue.md
 cp hyperblue.md ~/.claude/skills/hyperblue.md
 ```
 
+## Example Prompts
+
+Once installed, just describe what you need. HyperBlue activates automatically when it detects frontend/UI work.
+
+**Start from a business description:**
+```
+Build a landing page for a luxury perfume e-commerce brand based in Dubai.
+Here's our logo and brand colors: #1A1A2E, #C9A96E, #F5F0E8.
+```
+
+**Match a competitor's look and feel:**
+```
+I want a SaaS dashboard for a construction project management tool.
+Look at Procore and Buildertrend for design inspiration, but make ours feel more modern.
+```
+
+**Provide brand assets directly:**
+```
+Here's a screenshot of our current site [attach screenshot].
+Rebuild this hero section in Next.js — keep the brand identity but make it feel premium.
+```
+
+**Tune the dials:**
+```
+Create a pricing page for a developer tools company.
+Use MOTION_INTENSITY 8 and VISUAL_DENSITY 8 — I want it to feel like a cockpit.
+```
+
+**Quick component with brand voice:**
+```
+Build a signup form for a wellness app. The tone should be warm and calming,
+not corporate. Use soft greens and generous whitespace.
+```
+
 ## Configuration Dials
 
 HyperBlue exposes four tunable dials that adapt to brand personality:
