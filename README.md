@@ -4,6 +4,18 @@ A Claude Code skill for building premium, brand-aware React/Next.js frontends th
 
 Created by [Incredible Visibility](https://incrediblevisibility.com).
 
+## Features
+
+- **Interactive discovery** — click-to-choose options instead of typing long descriptions. HyperBlue asks smart questions with selectable answers to nail your brand direction fast.
+- **Competitive research** — analyzes 5-8 players in your industry to inform design decisions before writing a single line of code.
+- **Sitemap architecture** — generates an optimal page structure (minimal, standard, or comprehensive) that maps directly to your Next.js routing.
+- **Brand token system** — converts your assets into a complete design token set: colors, typography, spacing, shadows, and brand-specific dark mode.
+- **AI bias correction** — 30+ rules that eliminate generic LLM design patterns (the purple gradient, the centered hero, the "John Doe" placeholder data).
+- **Animation personality** — motion that matches your brand archetype (refined, energetic, technical, or editorial) instead of generic fade-ins.
+- **3D animation support** — CSS 3D effects (perspective tilts, depth layers, card flips) at high motion intensity, with opt-in React Three Fiber scenes for product showcases, particle heroes, and immersive experiences.
+- **Contextual asset sourcing** — when you don't supply images, HyperBlue searches Unsplash and Pexels for industry-relevant photography and video that matches your brand's visual tone. No more random stock photos.
+- **Accessibility built in** — WCAG 2.1 AA compliance, keyboard navigation, semantic HTML, and `prefers-reduced-motion` support in every output.
+
 ## The Problem
 
 AI-generated frontends all look the same. You've seen it: the centered hero with a purple gradient button, Inter font everywhere, generic 3-column card grid, "John Doe" placeholder data, and that unmistakable "AI purple" glow. It looks like a template, not a brand.
@@ -22,6 +34,8 @@ HyperBlue fixes this by injecting brand awareness, competitive research, and des
 | **Dark mode** | Colors inverted | Brand-specific dark palette (warm charcoal for luxury, navy for corporate, true dark for dev tools) |
 | **States** | Happy path only | Loading skeletons, empty states, error messages — all brand-voiced |
 | **Animations** | Generic fade-in | Personality-matched motion (refined for luxury, snappy for SaaS, bouncy for consumer) |
+| **3D** | Not supported | CSS 3D card tilts and depth layers; opt-in React Three Fiber for product showcases and immersive scenes |
+| **Images** | Random stock or broken Unsplash links | Contextually sourced from Unsplash/Pexels, matched to your industry and brand tone |
 
 ## How It Works
 
@@ -30,7 +44,8 @@ You describe your project
         |
         v
   Phase 1: DISCOVERY
-  Competitive research + brand intake + content strategy
+  Competitive research + brand intake + content strategy + sitemap architecture
+  (Interactive — you pick options, not type paragraphs)
         |
         v
   Phase 2: BRAND TOKENS
@@ -46,7 +61,7 @@ You describe your project
         |
         v
   Phase 5: EXTENSIONS (optional)
-  Bento grids, scroll animations, creative arsenal
+  Bento grids, scroll animations, 3D scenes, creative arsenal
         |
         v
   Premium, brand-specific frontend code
@@ -59,17 +74,19 @@ You describe your project
 
 ## Installation
 
-Copy the skill file into your Claude Code skills directory:
+**Option 1: Copy the skill file** into your Claude Code skills directory:
 
 ```bash
 # Project-level (applies to one project)
 mkdir -p .claude/skills
-cp skills/skill.md /path/to/your/project/.claude/skills/skill.md
+cp skills/skill.md /path/to/your/project/.claude/skills/hyperblue.md
 
 # Global (available in all projects)
 mkdir -p ~/.claude/skills
-cp skills/skill.md ~/.claude/skills/skill.md
+cp skills/skill.md ~/.claude/skills/hyperblue.md
 ```
+
+**Option 2: Reference it from your CLAUDE.md** by adding a pointer to the skill file in your project's `CLAUDE.md`.
 
 HyperBlue activates automatically when Claude detects frontend/UI work — no slash command needed.
 
@@ -99,6 +116,12 @@ Create a pricing page for a developer tools company.
 Use MOTION_INTENSITY 8 and VISUAL_DENSITY 8 — I want it to feel like a cockpit.
 ```
 
+**Add 3D for a premium feel:**
+```
+Build a product page for a premium headphone brand. I want a 3D model viewer
+where users can rotate the headphones. Use a dark theme with metallic accents.
+```
+
 **Quick component with brand voice:**
 ```
 Build a signup form for a wellness app. The tone should be warm and calming,
@@ -126,7 +149,13 @@ HyperBlue exposes four tunable dials you can set in your prompts:
 ## FAQ
 
 **Does it work without brand assets?**
-Yes. Give it a business description and it will research your industry's competitive landscape to inform the design direction. The more you provide (logo, colors, screenshots), the more precise the output.
+Yes. Give it a business description and it will research your industry's competitive landscape to inform the design direction. It also searches Unsplash and Pexels for contextually relevant images and videos that match your industry and brand tone — no random placeholders. The more you provide (logo, colors, screenshots), the more precise the output.
+
+**What's the interactive discovery experience like?**
+Instead of asking you to write paragraphs about your brand, HyperBlue presents selectable options at each step — brand personality, content density, competitor preferences, sitemap structure. You click choices rather than composing answers.
+
+**Does it generate a sitemap?**
+Yes. After discovery, HyperBlue proposes 2-3 sitemap variations (minimal, standard, comprehensive) based on your industry and competitors. The selected sitemap maps directly to your Next.js `app/` directory routing structure.
 
 **What stack does it target?**
 React and Next.js with Tailwind CSS by default. It respects your existing project setup — if you're on Tailwind v3 it won't use v4 syntax, and it checks your `package.json` before importing any library.
@@ -139,6 +168,9 @@ Absolutely. Set `VISUAL_DENSITY` to 7-10 for dense, data-heavy interfaces. At hi
 
 **Does it handle dark mode?**
 Yes, and not with simple color inversion. It generates brand-specific dark palettes — warm charcoal for lifestyle brands, navy for corporate, true dark for developer tools.
+
+**Does it support 3D animations?**
+Yes, in two tiers. Lightweight CSS 3D effects (perspective card tilts, depth layers, flip reveals) activate automatically at `MOTION_INTENSITY` 7+ with zero added dependencies. For full 3D scenes — product viewers, particle backgrounds, interactive globes — it uses React Three Fiber as an opt-in extension. 3D scenes are disabled on mobile and lazy loaded to protect performance.
 
 **What about accessibility?**
 WCAG 2.1 AA compliance is built in. Contrast ratios, keyboard navigation, semantic HTML, ARIA labels, and `prefers-reduced-motion` support are non-negotiable in every output.

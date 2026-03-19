@@ -112,6 +112,33 @@ After completing competitive research and brand intake, generate an ideal sitema
 
 **The finalized sitemap becomes the structural blueprint for Phase 3.** All navigation components, internal linking, and routing are derived from it.
 
+### 1E. Asset Sourcing
+
+When the user has not supplied their own images or videos, source contextually relevant royalty-free assets instead of using random placeholders. This step runs after brand intake so you know the industry, brand personality, and visual direction.
+
+**Image sourcing workflow:**
+1. Based on the project description, brand personality, and sitemap, identify the specific image subjects needed. Be precise — not "business" but "construction team reviewing blueprints on-site" or "luxury perfume bottles on marble surface with warm lighting."
+2. For each needed image, use `WebSearch` to search Unsplash (e.g., `site:unsplash.com construction team blueprints`). Search for 2-3 variations per slot to find the best match.
+3. From the search results, navigate to the Unsplash photo pages and extract the **direct image URL** — the stable `images.unsplash.com/photo-*` format. These are permanent and will not break.
+4. Append query parameters to control dimensions and cropping: `?w=800&h=600&fit=crop&auto=format&q=80`. Adjust `w` and `h` to match the layout's aspect ratio needs (hero images, card thumbnails, avatars all have different ratios).
+5. If Unsplash does not have a strong match, fall back to Pexels (`site:pexels.com`) using the same search strategy. Use the `images.pexels.com/photos/*` direct URLs with `?auto=compress&w=800&h=600`.
+
+**Video sourcing workflow (when the project calls for video backgrounds or media sections):**
+1. Search Pexels Videos (`site:pexels.com/video`) with specific scene descriptions matching the brand context.
+2. Use the direct video file URLs from Pexels (they provide free-to-use MP4 links).
+3. Always include `poster` attributes on `<video>` elements using a sourced still image, so content is visible before the video loads.
+4. Wrap video backgrounds in `<video autoPlay muted loop playsInline>` with `prefers-reduced-motion` media query to pause for accessibility.
+
+**Asset selection principles:**
+- **Match the brand temperature.** Warm brands get warm-toned photography (golden hour, warm interiors). Cool/technical brands get crisp, high-contrast, blue-toned images.
+- **Match the content density.** Editorial layouts (VISUAL_DENSITY 1-3) need large, atmospheric hero images. Dashboard-style layouts (VISUAL_DENSITY 7-10) need small, functional thumbnails or icons instead of photos.
+- **Avoid stock clichés.** No handshake photos, no woman-laughing-at-salad, no generic "diverse team in glass conference room." Search for specific, authentic scenes tied to the actual industry.
+- **People should match context.** If the brand is a Dubai perfume house, source imagery that reflects that market. If it's a Portland coffee roaster, the imagery should feel Pacific Northwest.
+- **Consistent visual style across all sourced images.** Don't mix moody dark photography with bright airy lifestyle shots on the same page. Pick a photographic direction and stick with it.
+- **Always include attribution.** Add a comment in the code above each sourced image with the photographer name and Unsplash/Pexels link: `{/* Photo by [Name] on Unsplash: [URL] */}`.
+
+**The sourced asset set feeds into Phase 3.** All image references in generated components use these curated URLs instead of random placeholders.
+
 ---
 
 ## PHASE 2: BRAND TOKEN SYSTEM
@@ -260,7 +287,8 @@ Strictly avoid unless the brand's identity explicitly calls for them:
 - No startup slop names: "Acme", "Nexus", "SmartFlow". Invent contextual brand names.
 
 **Resources:**
-- No Unsplash links (they break). Use `https://picsum.photos/seed/{random_string}/800/600` or SVG placeholders.
+- No random placeholder images (`picsum.photos`, `placeholder.com`, `via.placeholder`). Use the curated assets from Phase 1E. If Phase 1E was skipped, use SVG placeholder illustrations styled with brand tokens — never random stock photos.
+- Unsplash and Pexels direct image URLs (`images.unsplash.com/photo-*`, `images.pexels.com/photos/*`) are allowed and preferred. The old `source.unsplash.com` redirect URLs are banned (they break). Always use the stable direct format with dimension parameters.
 - shadcn/ui allowed but NEVER in default state. Customize radii, colors, and shadows using brand tokens.
 
 ### 3E. Performance Guardrails
@@ -308,7 +336,7 @@ MOTION_INTENSITY 7-10 (Choreographed):
 - Layout animations: Framer Motion `layout` and `layoutId` for smooth re-ordering.
 
 **Critical performance rules for animations:**
-- NEVER mix GSAP/ThreeJS with Framer Motion in the same component tree.
+- NEVER mix GSAP, Three.js/R3F, or Framer Motion in the same component tree. Each animation system gets its own isolated Client Component.
 - `staggerChildren` parent and children must be in the same Client Component tree.
 - Perpetual animations must be isolated in their own memoized Client Components.
 - All `useEffect` animations must have cleanup functions.
@@ -447,6 +475,66 @@ Use GSAP with ScrollTrigger exclusively — never Framer Motion for scroll-drive
 
 Patterns: sticky scroll sequences, scroll-hijacked horizontal pans, parallax layering, scroll-progress SVG drawing, frame-by-frame animation tied to scrollbar position.
 
+### 5D. 3D Animation Module (activate when explicitly requested or for product showcases, creative portfolios, immersive hero scenes)
+
+Adds depth and dimensionality to the interface. Split into two tiers based on complexity.
+
+**Tier 1: CSS 3D (no dependencies)**
+
+Lightweight 3D effects using native CSS. These can be used at MOTION_INTENSITY 7+ without adding any bundle weight.
+
+- **Perspective card tilt** — mouse-tracking `rotateX`/`rotateY` on hover using `perspective` and `transform-style: preserve-3d`. Track mouse position with `useMotionValue` (Framer Motion) or a lightweight `mousemove` handler. Apply `will-change: transform` on hover only.
+- **Depth layers** — parallax-like stacking using `translateZ()` within a `perspective` container. Creates layered depth without scroll binding.
+- **Card flip** — `rotateY(180deg)` with `backface-visibility: hidden` for reveal interactions (pricing toggles, feature comparisons, team bios).
+- **3D button press** — combine `translateZ`, `rotateX`, and brand-tinted `box-shadow` shifts to create physical push depth on `:active`.
+
+CSS 3D implementation rules:
+- Always set `perspective` on the parent container (800-1200px typical range). Never on the animated element itself.
+- Use `transform-style: preserve-3d` only on direct parent of 3D-transformed children.
+- Keep rotation angles subtle: ±5-15° for tilt effects, 180° only for full flips.
+- Disable on mobile (`< 768px`) — fall back to flat 2D transitions.
+
+**Tier 2: React Three Fiber (opt-in, heavy)**
+
+For immersive 3D scenes. Only use when the project explicitly needs a 3D experience — product configurators, interactive globes, particle hero backgrounds, 3D model showcases.
+
+**Stack:** `@react-three/fiber` + `@react-three/drei`. Check `package.json` before importing. If missing, output install commands:
+```bash
+npm install three @react-three/fiber @react-three/drei
+```
+
+**Scene patterns:**
+
+| Pattern | Use case | Key drei helpers |
+|---|---|---|
+| Product showcase | E-commerce, physical goods | `<Stage>`, `<OrbitControls>`, `<Environment>`, `<ContactShadows>` |
+| Floating elements | Hero backgrounds, ambient depth | `<Float>`, `<MeshDistortMaterial>`, `<Sparkles>` |
+| Interactive globe | SaaS with global presence | `<Sphere>`, custom shaders, `<Html>` for labels |
+| Particle field | Tech/creative hero sections | `<Points>`, `<PointMaterial>`, buffer geometry |
+| Text extrusion | Bold typographic heroes | `<Text3D>`, `<Center>`, brand font as typeface JSON |
+
+**Implementation rules:**
+- Every R3F `<Canvas>` must live in its own isolated Client Component. Never nest a Canvas inside a Framer Motion `AnimatePresence` tree.
+- Set `<Canvas frameloop="demand">` for static/interactive scenes (renders only on interaction). Use `frameloop="always"` only for continuous animation.
+- Always provide a fallback for when WebGL is unavailable: wrap the Canvas in an error boundary that renders a static image or CSS alternative.
+- Limit draw calls. One scene should have fewer than 50 meshes. Use `<Instances>` or `<InstancedMesh>` for repeated geometry.
+- Compress 3D models: `.glb` format, Draco compression, textures under 1024x1024. Use `<useGLTF.preload>` for async loading with a branded skeleton loader.
+- Lighting setup: one ambient (`intensity: 0.4`), one directional key light, optional `<Environment preset="studio">`. Tint lights toward brand temperature (warm or cool).
+- Camera: `fov: 45` for product shots (less distortion), `fov: 75` for immersive scenes. Use `<PresentationControls>` over `<OrbitControls>` for guided user interaction.
+
+**Performance guardrails for 3D:**
+- Mobile (`< 768px`): disable R3F scenes entirely. Replace with a static image or CSS 3D fallback from Tier 1. Mobile GPUs cannot reliably handle WebGL + the rest of the page.
+- Set `dpr={[1, 1.5]}` on the Canvas to cap pixel ratio. Never render at full retina (`dpr={2}`) for complex scenes.
+- Lazy load the Canvas component: `const Scene = dynamic(() => import('./Scene'), { ssr: false })`. 3D scenes must never block initial page load or SSR.
+- Dispose of geometries, materials, and textures in cleanup. Use drei's `useGLTF` (auto-disposes) over raw Three.js loaders.
+- Never run `useFrame` callbacks that allocate objects. Pre-allocate vectors and quaternions outside the loop.
+- `prefers-reduced-motion`: replace animated 3D scenes with a static camera angle. Keep the visual but stop the motion.
+
+**Brand integration:**
+- Materials should reference brand tokens. Map `--brand-primary` to `meshStandardMaterial` color. Use `--brand-surface` for environment background.
+- Match the lighting mood to the animation archetype: warm and soft for Refined, high-contrast for Technical, colorful and dynamic for Energetic.
+- 3D scenes must feel like a natural part of the page, not a tech demo. The surrounding 2D layout, typography, and spacing should flow seamlessly into and out of the 3D section.
+
 ---
 
 ## PRE-FLIGHT CHECKLIST
@@ -483,6 +571,13 @@ Evaluate every output against this matrix before delivering:
 - [ ] Is placeholder data realistic and organic (not "John Doe" or "99.99%")?
 - [ ] Are cards used only when elevation conveys hierarchy?
 - [ ] Does the output look like it was designed for this specific brand?
+
+**Assets:**
+- [ ] Are all images contextually relevant to the brand and industry (not random stock)?
+- [ ] Do image URLs use stable direct formats (`images.unsplash.com/photo-*` or `images.pexels.com/photos/*`)?
+- [ ] Is photographic style consistent across the page (same tone, lighting, mood)?
+- [ ] Do `<video>` elements have `poster` attributes and respect `prefers-reduced-motion`?
+- [ ] Is attribution included as code comments for all sourced assets?
 
 ---
 
