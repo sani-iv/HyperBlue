@@ -64,11 +64,11 @@ Copy the skill file into your Claude Code skills directory:
 ```bash
 # Project-level (applies to one project)
 mkdir -p .claude/skills
-cp skills/hyperblue.md /path/to/your/project/.claude/skills/hyperblue.md
+cp skills/skill.md /path/to/your/project/.claude/skills/skill.md
 
 # Global (available in all projects)
 mkdir -p ~/.claude/skills
-cp skills/hyperblue.md ~/.claude/skills/hyperblue.md
+cp skills/skill.md ~/.claude/skills/skill.md
 ```
 
 HyperBlue activates automatically when Claude detects frontend/UI work — no slash command needed.
