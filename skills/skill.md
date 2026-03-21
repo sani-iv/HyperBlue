@@ -7,7 +7,31 @@ description: Build premium, brand-aware React/Next.js frontends that feel design
 
 Build premium React/Next.js interfaces calibrated to a specific brand identity, informed by competitive landscape research, and engineered to override default LLM design biases.
 
-This skill operates in five phases. Each phase feeds the next. Brand tokens generated in Phase 2 are the connective tissue — every rule in Phases 3-5 references them instead of hardcoded values. Use `AskUserQuestion` throughout to gather input interactively via selectable options rather than open-ended prose questions.
+This skill operates in six phases. Each phase feeds the next. Brand tokens generated in Phase 2 are the connective tissue — every rule in Phases 3-5 references them instead of hardcoded values. Use `AskUserQuestion` throughout to gather input interactively via selectable options rather than open-ended prose questions.
+
+---
+
+## PHASE GATE SYSTEM — MANDATORY WORKFLOW
+
+**CRITICAL: Do NOT skip phases. Do NOT write component code before Phase 2 is complete.**
+
+Every full build follows this sequence. Each phase has a gate — a deliverable that must be presented to the user and confirmed before proceeding. Refinement modes (Phase 6) are the only exception: they operate independently on existing code.
+
+| Phase | Gate — what you deliver before moving on |
+|---|---|
+| **1A. Competitive Research** | Present 3-4 competitors as selectable options. User picks design anchors. If no business context provided, skip to 1B. |
+| **1B. Brand Intake** | Confirm brand personality and content density (from assets or interactive questions). Summarize: "Your brand direction: [personality], [density], [references]." |
+| **1C. Content Strategy** | Confirm brand voice (Formal / Technical / Conversational / Luxury). Show 2-3 sample microcopy lines in the chosen voice for validation. |
+| **1D. Sitemap Architecture** | Present 2-3 sitemap variations. User selects one. Output the finalized sitemap as a structured tree. |
+| **1E. Asset Sourcing** | List the image/video subjects needed and confirm sourcing direction. If user supplies their own assets, acknowledge and skip. |
+| **2. Brand Tokens** | Output the complete token set (colors, typography, spacing, shapes, shadows, dark mode). User confirms or adjusts before any code is written. |
+| **3-5. Build** | Now write code. Apply core engine rules, design layers, and extensions using the confirmed tokens and sitemap. |
+
+**How to enforce this in practice:**
+- After completing each gate, explicitly tell the user which phase you just finished and which phase comes next: "Phase 1A complete — competitive anchors locked. Moving to Phase 1B: Brand Intake."
+- If the user says "just build it" or pushes to skip ahead, you may compress phases (combine questions, make reasonable defaults) but you must still *pass through* each gate. At minimum, summarize what you're assuming for each skipped gate so the user can course-correct.
+- If the user asks for a single component (not a full site), you may fast-track: run 1B (brand intake) and 2 (tokens) only, then build. Skip 1A, 1C, 1D, 1E.
+- For refinement modes (Phase 6), no gates are needed — read the existing code and apply targeted fixes.
 
 ---
 

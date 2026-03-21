@@ -97,6 +97,123 @@ cp skills/skill.md ~/.claude/skills/hyperblue.md
 
 HyperBlue activates automatically when Claude detects frontend/UI work — no slash command needed.
 
+## How a Full Build Works
+
+HyperBlue follows a strict phase-gate workflow. Each phase produces a deliverable that you confirm before it moves on. Here's what a full conversation looks like:
+
+```
+YOU:  Build a website for a luxury perfume e-commerce brand based in Dubai.
+      Here's our logo and brand colors: #1A1A2E, #C9A96E, #F5F0E8.
+
+┌─ PHASE 1A: COMPETITIVE RESEARCH ─────────────────────────────────────┐
+│                                                                       │
+│  CLAUDE: I researched the luxury fragrance market. Here are the top   │
+│  players and their visual signatures:                                 │
+│                                                                       │
+│  → [Option 1] Le Labo — minimal, apothecary aesthetic                │
+│  → [Option 2] Byredo — clean editorial, lots of whitespace           │
+│  → [Option 3] Amouage — ornate, gold accents, rich photography       │
+│  → [Option 4] Initio — dark, bold, modern luxury                     │
+│                                                                       │
+│  Which feel closest to your desired positioning? (pick 1-3)          │
+│                                                                       │
+│  YOU: 2 and 3                                                        │
+│                                                                       │
+│  ✓ Phase 1A complete — design anchors locked.                        │
+└───────────────────────────────────────────────────────────────────────┘
+
+┌─ PHASE 1B: BRAND INTAKE ─────────────────────────────────────────────┐
+│                                                                       │
+│  CLAUDE: Based on your logo and colors, here's what I'm seeing:      │
+│  deep navy base, warm gold accent, cream surface. The logo has        │
+│  geometric character — I'll use sharper radii and structured layouts. │
+│                                                                       │
+│  Brand personality — which fits best?                                │
+│  → [Option 1] Minimal & Clean                                        │
+│  → [Option 2] Rich & Ornate                                          │
+│  → [Option 3] Bold & Expressive                                      │
+│                                                                       │
+│  YOU: Minimal & Clean                                                │
+│                                                                       │
+│  ✓ Phase 1B complete — brand direction confirmed.                    │
+└───────────────────────────────────────────────────────────────────────┘
+
+┌─ PHASE 1C: CONTENT STRATEGY ─────────────────────────────────────────┐
+│                                                                       │
+│  CLAUDE: For a luxury perfume brand, I'd recommend the Luxury voice: │
+│  minimal, evocative copy. Here's how it sounds:                      │
+│                                                                       │
+│  CTA button: "Discover" (not "Shop Now")                             │
+│  Empty cart: "Your collection awaits" (not "Your cart is empty")     │
+│  Error: "We couldn't reach our atelier" (not "Server error")        │
+│                                                                       │
+│  Does this voice feel right?                                         │
+│                                                                       │
+│  YOU: Yes, perfect.                                                  │
+│                                                                       │
+│  ✓ Phase 1C complete — brand voice locked.                           │
+└───────────────────────────────────────────────────────────────────────┘
+
+┌─ PHASE 1D: SITEMAP ──────────────────────────────────────────────────┐
+│                                                                       │
+│  CLAUDE: Here are three sitemap options:                             │
+│                                                                       │
+│  → [Minimal] Home, Shop, About, Contact                             │
+│  → [Standard] Home, Collections, Product pages, About, Journal,     │
+│    Contact                                                            │
+│  → [Comprehensive] Home, Collections, Products, About/Story,        │
+│    Journal/Blog, Gifting, Store Locator, Contact, Account            │
+│                                                                       │
+│  YOU: Standard                                                       │
+│                                                                       │
+│  ✓ Phase 1D complete — sitemap locked.                               │
+└───────────────────────────────────────────────────────────────────────┘
+
+┌─ PHASE 1E: ASSET SOURCING ───────────────────────────────────────────┐
+│                                                                       │
+│  CLAUDE: You didn't supply product images, so I'll source from       │
+│  Unsplash/Pexels. I need:                                            │
+│  - Hero: luxury perfume bottles on marble, warm lighting             │
+│  - Collections: atmospheric fragrance photography                    │
+│  - About: Gulf-inspired luxury interior or atelier                   │
+│                                                                       │
+│  Sound right, or do you have your own images?                        │
+│                                                                       │
+│  YOU: Go ahead and source them.                                      │
+│                                                                       │
+│  ✓ Phase 1E complete — asset direction confirmed.                    │
+└───────────────────────────────────────────────────────────────────────┘
+
+┌─ PHASE 2: BRAND TOKENS ──────────────────────────────────────────────┐
+│                                                                       │
+│  CLAUDE: Here's your complete token system:                          │
+│                                                                       │
+│  Colors: --brand-primary: #1A1A2E, --brand-accent: #C9A96E, ...     │
+│  Typography: Display: Cormorant Garamond, Body: Satoshi, ...         │
+│  Spacing: 8px base unit, generous section gaps (luxury density)      │
+│  Dark mode: warm charcoal base (#1C1917), gold accent preserved      │
+│                                                                       │
+│  Confirm these tokens before I start building.                       │
+│                                                                       │
+│  YOU: Looks great. Build it.                                         │
+│                                                                       │
+│  ✓ Phase 2 complete — tokens locked. Now writing code.               │
+└───────────────────────────────────────────────────────────────────────┘
+
+┌─ PHASES 3-5: BUILD ──────────────────────────────────────────────────┐
+│                                                                       │
+│  Claude writes production code using your confirmed tokens, sitemap, │
+│  brand voice, competitive anchors, and sourced assets. Core engine   │
+│  rules, design layers, and extensions all reference the token system │
+│  — nothing is hardcoded or generic.                                  │
+│                                                                       │
+└───────────────────────────────────────────────────────────────────────┘
+```
+
+**What if you want to skip ahead?** You can say "just build it" at any point. HyperBlue will compress the remaining phases — making sensible defaults — but it will tell you what it assumed so you can course-correct.
+
+**What if you just need a single component?** For isolated components (a signup form, a pricing card), HyperBlue fast-tracks: it runs brand intake and token generation, then builds. No competitive research or sitemap needed.
+
 ## Example Prompts
 
 **Start from a business description:**
