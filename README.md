@@ -15,6 +15,7 @@ Created by [Incredible Visibility](https://incrediblevisibility.com).
 - **3D animation support** — CSS 3D effects (perspective tilts, depth layers, card flips) at high motion intensity, with opt-in React Three Fiber scenes for product showcases, particle heroes, and immersive experiences.
 - **Contextual asset sourcing** — when you don't supply images, HyperBlue searches Unsplash and Pexels for industry-relevant photography and video that matches your brand's visual tone. No more random stock photos.
 - **Accessibility built in** — WCAG 2.1 AA compliance, keyboard navigation, semantic HTML, and `prefers-reduced-motion` support in every output.
+- **Post-build refinement** — seven targeted modes (Review, Typeset, Arrange, Palette, Animate, Harden, Accessibility) that improve existing code without re-running the full pipeline. Fix just the typography, just the colors, or just the missing states.
 
 ## The Problem
 
@@ -36,6 +37,7 @@ HyperBlue fixes this by injecting brand awareness, competitive research, and des
 | **Animations** | Generic fade-in | Personality-matched motion (refined for luxury, snappy for SaaS, bouncy for consumer) |
 | **3D** | Not supported | CSS 3D card tilts and depth layers; opt-in React Three Fiber for product showcases and immersive scenes |
 | **Images** | Random stock or broken Unsplash links | Contextually sourced from Unsplash/Pexels, matched to your industry and brand tone |
+| **Refinement** | Regenerate everything from scratch | Targeted fixes — typography, spacing, colors, motion, or states — on existing code |
 
 ## How It Works
 
@@ -65,6 +67,11 @@ You describe your project
         |
         v
   Premium, brand-specific frontend code
+        |
+        v
+  Phase 6: REFINEMENT (on existing code)
+  Review, Typeset, Arrange, Palette, Animate, Harden, Accessibility
+  Fix specific design dimensions without re-running the full pipeline
 ```
 
 ## Requirements
@@ -126,6 +133,204 @@ where users can rotate the headphones. Use a dark theme with metallic accents.
 ```
 Build a signup form for a wellness app. The tone should be warm and calming,
 not corporate. Use soft greens and generous whitespace.
+```
+
+## Optional Extensions (Phase 5)
+
+HyperBlue includes four optional extension modules that activate when you ask for them or when the project naturally calls for them. These go beyond the core engine to add advanced interactivity and visual depth.
+
+### Bento Paradigm
+
+Modern SaaS-style feature grids with perpetual micro-animations inside each card — typewriter effects, auto-sorting lists, breathing status indicators, and data stream carousels. Activates naturally for SaaS feature sections.
+
+**Example prompts:**
+
+```
+Build a features section for an AI writing tool using the bento grid style.
+Each card should have a live animation showing the feature in action.
+```
+
+```
+Create a SaaS product page for a project management tool. Use bento cards
+with perpetual animations — I want the cards to feel alive, not static.
+```
+
+### Creative Arsenal
+
+A library of advanced interaction patterns: magnetic buttons, parallax tilt cards, glassmorphism containers, morphing modals, kinetic marquees, text mask reveals, particle explosion buttons, and more. Use these when standard patterns feel insufficient.
+
+**Example prompts:**
+
+```
+Build a portfolio hero section for a creative agency. I want magnetic buttons,
+a text scramble effect on the headline, and parallax tilt on the project cards.
+```
+
+```
+Create a pricing page with glassmorphism cards and a morphing modal —
+when users click "Choose plan", the button should expand into the checkout dialog.
+```
+
+```
+Design a homepage for a music streaming app. Use a kinetic marquee for
+featured artists, spotlight border illumination on album cards, and
+directional hover-aware fills on the navigation buttons.
+```
+
+### Scroll Animation Module
+
+For editorial and storytelling sites where scroll position drives the narrative. Uses GSAP with ScrollTrigger for sticky scroll sequences, horizontal scroll pans, parallax layering, and scroll-progress SVG drawing.
+
+**Example prompts:**
+
+```
+Build a product story page for a premium watch brand. Use scroll-driven
+animations — the watch should assemble piece by piece as the user scrolls
+through the craftsmanship story.
+```
+
+```
+Create an agency portfolio with horizontal scroll-hijacked project showcases
+and sticky scroll sections that pin while content transitions beneath them.
+```
+
+```
+Design an annual report page where charts draw themselves on scroll
+and stats count up as they enter the viewport.
+```
+
+### 3D Animation Module
+
+Two tiers of 3D support:
+
+- **Tier 1: CSS 3D** (no dependencies) — perspective card tilts, depth layers, card flips, 3D button presses. Activates automatically at `MOTION_INTENSITY` 7+ with zero bundle cost.
+- **Tier 2: React Three Fiber** (opt-in) — full 3D scenes for product showcases, particle hero backgrounds, interactive globes, and text extrusions. Adds `three`, `@react-three/fiber`, and `@react-three/drei`.
+
+Both tiers disable on mobile and respect `prefers-reduced-motion`.
+
+**Example prompts:**
+
+```
+Build a product page for a sneaker brand with CSS 3D perspective tilt
+on the shoe cards — they should follow the mouse on hover.
+```
+
+```
+Create a hero section for a crypto platform with a floating 3D globe
+showing live transaction nodes. Use React Three Fiber.
+```
+
+```
+Design a team page where member cards flip in 3D to reveal their bio
+on the back. Keep it lightweight — CSS 3D only, no Three.js.
+```
+
+```
+Build a product configurator for a furniture brand. I want users to
+rotate a 3D model of the chair and change materials. Use React Three Fiber
+with orbit controls and environment lighting.
+```
+
+## Refinement Modes (Phase 6)
+
+HyperBlue isn't just a build tool — it can also refine existing code. These modes target specific design dimensions on already-built frontends without re-running the full discovery pipeline. If brand tokens exist in the codebase, refinement modes use them. If not, they infer direction from what's already there.
+
+### Review
+
+Full design audit against HyperBlue's anti-slop rules, brand consistency, accessibility, and performance. Produces a structured report without auto-fixing.
+
+```
+Review my landing page for AI design anti-patterns. Flag anything
+that looks generic or template-like.
+```
+
+```
+Audit the components in src/components — check for accessibility issues,
+hardcoded colors, and missing UI states.
+```
+
+### Typeset
+
+Fix typography only — fonts, scale, hierarchy, measure, and line height.
+
+```
+The typography on this page feels generic. Run a typeset pass —
+suggest better fonts and fix the type hierarchy.
+```
+
+```
+Fix the typography across all pages. Use a fixed type scale for the
+dashboard views and fluid clamp() sizing for the marketing pages.
+```
+
+### Arrange
+
+Fix layout and spacing — grid structure, whitespace rhythm, alignment, and responsive behavior.
+
+```
+The spacing on this page feels inconsistent. Normalize the section gaps,
+fix the grid, and make sure everything collapses cleanly on mobile.
+```
+
+```
+Tighten the layout to VISUAL_DENSITY 8 — I want this dashboard
+to feel like a cockpit, not a brochure.
+```
+
+### Palette
+
+Fix colors — brand consistency, contrast, dark mode, and semantic tokens.
+
+```
+Extract all the hardcoded colors in this project into a proper token system
+and replace the inline values.
+```
+
+```
+The dark mode looks like someone just inverted the colors. Fix it —
+we're a luxury brand, use warm charcoal tones.
+```
+
+### Animate
+
+Add or fix animations to match a brand personality archetype.
+
+```
+This page feels too static. Add animations at MOTION_INTENSITY 7 —
+we're a consumer app, so make it feel energetic and bouncy.
+```
+
+```
+The animations feel random — some are bouncy, some are linear, some are slow.
+Pick one archetype (Technical) and make everything consistent.
+```
+
+### Harden
+
+Add missing UI states — loading skeletons, empty states, error messages, form validation, and tactile feedback.
+
+```
+This dashboard only shows the happy path. Add loading skeletons,
+empty states, and error handling to all the data-driven components.
+```
+
+```
+Harden the forms — add validation messages, helper text, and proper
+error states. Use our brand voice, not generic "Something went wrong."
+```
+
+### Accessibility
+
+Dedicated WCAG 2.1 AA compliance pass with auto-fixes.
+
+```
+Run an accessibility pass on the entire project. Fix contrast issues,
+add keyboard navigation, and make sure all images have proper alt text.
+```
+
+```
+Make sure every animation respects prefers-reduced-motion and that
+no UI relies on color alone to convey meaning.
 ```
 
 ## Configuration Dials

@@ -537,6 +537,102 @@ npm install three @react-three/fiber @react-three/drei
 
 ---
 
+## PHASE 6: REFINEMENT MODES
+
+These modes operate on **existing code** without re-running the full Phase 1-5 pipeline. Use them when the user has already-built frontend code and wants to improve a specific aspect. Each mode reads the current codebase, identifies issues within its domain, and applies targeted fixes using HyperBlue's design rules and any existing brand tokens.
+
+**How refinement modes activate:** The user asks to fix, improve, audit, or refine a specific design dimension on code that already exists. They may reference the mode name directly (e.g., "run a typeset pass") or describe the intent (e.g., "the spacing feels off" → Arrange mode).
+
+**Brand token awareness:** If brand tokens were established in a prior build (look for CSS custom properties like `--brand-*`, Tailwind theme extensions, or a design token file), refinement modes use them. If no tokens exist, the mode infers brand direction from the existing code's colors, fonts, and spacing patterns, and applies corrections consistent with what's already there — it does not invent a new brand.
+
+### 6A. Review
+
+Full design audit against HyperBlue's rules. Scans the codebase and produces a structured report — does not auto-fix unless asked.
+
+**What it checks:**
+- **Anti-slop:** Flags AI tells from Phase 3D — generic names ("John Doe"), fake round numbers ("99.99%"), AI purple gradients, placeholder images (`picsum.photos`), banned copy patterns ("Unleash", "Seamless"), Inter font in premium contexts, centered hero bias, generic 3-column card grids.
+- **Brand consistency:** Hardcoded colors instead of tokens, mixed warm/cool neutrals, inconsistent font stacks, components that escaped the brand system.
+- **Accessibility:** Contrast ratio failures, missing alt text, missing keyboard focus indicators, animations without `prefers-reduced-motion` checks, form inputs without labels.
+- **Performance:** Animations on `top`/`left`/`width`/`height` instead of `transform`/`opacity`, `h-screen` instead of `min-h-[100dvh]`, missing `useEffect` cleanup on animations, non-isolated Client Components.
+- **States:** Missing loading skeletons, empty states, or error states on data-driven components.
+
+**Output format:** A numbered list of findings grouped by severity (critical → warning → suggestion), each with the file path, line reference, the issue, and a concrete fix recommendation. The user can then ask to fix all, fix a category, or fix individually.
+
+### 6B. Typeset
+
+Targeted typography refinement. Fixes font selection, scale, hierarchy, measure, and rhythm without touching layout or color.
+
+**What it fixes:**
+- **Font selection:** Flags Inter/system fonts in premium or creative contexts. Suggests brand-appropriate alternatives (`Geist`, `Satoshi`, `Cabinet Grotesk`, `Plus Jakarta Sans`, etc.) based on the existing design's personality. Does not change fonts if the brand intentionally uses them (Brand Override Rule).
+- **Type scale:** Ensures a consistent, intentional scale. For app UIs, applies a fixed scale (`text-xs` through `text-6xl` with defined steps). For marketing/content pages, applies fluid typography using `clamp()` (e.g., `font-size: clamp(2rem, 5vw, 4.5rem)`).
+- **Hierarchy depth:** Checks that there are at least 3 distinct visual levels (display → heading → body) with clear size/weight differentiation. Flags headings that are too similar in size.
+- **Measure:** Ensures body text has `max-w-[65ch]` or equivalent to prevent overly wide lines.
+- **Line height & tracking:** Display text gets `tracking-tighter leading-none`. Body text gets `leading-relaxed`. Flags mismatches.
+- **Font loading:** Checks that custom fonts are properly loaded (Next.js `next/font`, `@font-face`, or Google Fonts link) and that `font-display: swap` is set to prevent FOIT.
+
+### 6C. Arrange
+
+Layout and spacing refinement. Fixes alignment, whitespace rhythm, grid structure, and responsive behavior.
+
+**What it fixes:**
+- **Spacing consistency:** Identifies mixed spacing values (e.g., `p-4` next to `p-5` next to `p-[18px]`) and normalizes to a consistent scale. Ensures section gaps follow a rhythm (e.g., `py-16 md:py-24` consistently, not random values per section).
+- **Grid structure:** Replaces complex flexbox percentage math (`w-[calc(33%-1rem)]`) with clean CSS Grid. Ensures multi-column layouts use `grid-cols-*` with consistent `gap-*`.
+- **Container discipline:** Checks that content is properly contained (`max-w-7xl mx-auto` or equivalent). Flags content that bleeds or floats without intent.
+- **Responsive collapse:** Ensures all multi-column layouts collapse to `w-full px-4 py-8` below 768px. Flags horizontal scrolling on mobile. Checks that asymmetric layouts fall back to single-column.
+- **Alignment audit:** Detects mixed alignment within sections (left-aligned heading over centered content, or vice versa) and normalizes to a deliberate alignment strategy.
+- **Density calibration:** If the user specifies a VISUAL_DENSITY target, adjusts padding, gaps, and whitespace to match that level. Low density (1-3) gets generous section gaps; high density (8-10) gets tight padding and border separators instead of cards.
+
+### 6D. Palette
+
+Color refinement. Fixes brand consistency, contrast, dark mode, and semantic color usage.
+
+**What it fixes:**
+- **Token extraction:** If the codebase uses hardcoded hex/rgb values, extracts them into a cohesive token system (`--brand-primary`, `--brand-neutral-*`, etc.) and replaces inline values with token references.
+- **Palette coherence:** Detects mixed color temperatures (warm and cool grays in the same interface) and normalizes to one direction. Ensures accent colors are under 80% saturation.
+- **AI color purge:** Flags AI purple/blue gradient aesthetics, neon outer glows, and oversaturated accents. Replaces with brand-appropriate alternatives.
+- **Contrast compliance:** Tests all text/background combinations against WCAG 2.1 AA ratios (4.5:1 body, 3:1 large text). Flags failures with the exact contrast ratio and suggests the nearest compliant shade.
+- **Dark mode:** If dark mode exists, checks that it's brand-specific (not simple inversion). Warm brands should use warm charcoal backgrounds, corporate brands navy, tech brands true dark. If dark mode doesn't exist and the user wants it, generates the full mapping.
+- **Semantic colors:** Ensures `success`, `warning`, `error`, `info` colors exist and don't clash with the brand palette.
+
+### 6E. Animate
+
+Motion refinement. Adds, fixes, or calibrates animations to match a brand personality archetype.
+
+**What it fixes:**
+- **Archetype alignment:** Determines the appropriate animation archetype (Refined, Energetic, Technical, Editorial) from the existing brand direction, then checks that all motion uses consistent easing, duration, and character. Flags mismatches (e.g., bouncy spring animations on a luxury brand).
+- **Motion intensity calibration:** If the user specifies a MOTION_INTENSITY target, adds or removes animations to match. Low intensity (1-3) strips all auto-animations, leaving only hover/active states. High intensity (7-10) adds scroll-triggered reveals, staggered orchestration, and micro-interactions.
+- **Performance fixes:** Replaces animations on `top`/`left`/`width`/`height` with `transform`/`opacity` equivalents. Isolates perpetual animations into their own memoized Client Components. Adds `useEffect` cleanup to all animation hooks. Removes `window.addEventListener('scroll')` in favor of Intersection Observer or Framer Motion.
+- **Accessibility:** Wraps all motion in `prefers-reduced-motion` checks. Adds static fallbacks for motion-dependent interactions.
+- **Mobile degradation:** Ensures complex animations (parallax, magnetic effects, scroll hijacking) are disabled below 768px. Keeps simple transitions for brand continuity.
+- **Library isolation:** Flags components that mix GSAP, Framer Motion, and/or React Three Fiber in the same component tree. Separates into isolated Client Components.
+
+### 6F. Harden
+
+State completeness refinement. Adds missing UI states and edge cases that make the interface feel production-ready.
+
+**What it fixes:**
+- **Loading states:** Adds skeleton loaders matching component dimensions (not generic spinners). Skeleton shimmer color matches brand tokens.
+- **Empty states:** Adds branded messaging and illustration/icon for empty data views. Uses the established brand voice, not "No data found."
+- **Error states:** Adds inline, specific error messages for form validation and data fetching failures. Uses brand voice and helpful recovery instructions, not "Something went wrong."
+- **Tactile feedback:** Adds `:active` press effects (`-translate-y-[1px]` or `scale-[0.98]`) to interactive elements that lack them.
+- **Form completeness:** Ensures labels above inputs, helper text in markup, error text below inputs, proper `htmlFor`/`id` linking, and full-width inputs on mobile.
+- **Placeholder data:** Replaces generic names, round numbers, and stock placeholder content with realistic, organic alternatives. "John Doe" → "Marcus Reilly", "99.99%" → "47.2%", "$1,234" → "$1,847.30".
+
+### 6G. Accessibility
+
+Dedicated WCAG 2.1 AA compliance pass. Overlaps with the accessibility checks in Review mode but goes deeper and auto-fixes.
+
+**What it fixes:**
+- **Contrast:** Tests every text/background pair and adjusts colors to meet AA ratios while staying as close to the original brand color as possible.
+- **Keyboard navigation:** Adds `tabIndex`, focus indicators styled with brand accent (not browser default), and logical tab order. Ensures all interactive elements respond to Enter, Escape, and Arrow keys where appropriate.
+- **Semantic HTML:** Replaces generic `<div>` structures with semantic elements (`nav`, `main`, `article`, `section`, `aside`, `header`, `footer`). Adds `role` attributes only where semantic elements aren't sufficient.
+- **ARIA:** Adds `aria-label` to icon-only buttons, `aria-live` regions to dynamic content, `aria-expanded` to toggles and accordions, and `aria-describedby` linking error messages to form inputs.
+- **Images:** Adds meaningful `alt` text to content images. Adds `aria-hidden="true"` to decorative images. Flags missing `alt` attributes.
+- **Motion:** Wraps every animation in `prefers-reduced-motion` media queries or Framer Motion's `useReducedMotion`. Ensures auto-playing video has user controls and pause capability.
+- **Color independence:** Flags any UI that relies on color alone to convey information (status indicators, form validation, charts) and adds secondary indicators (icons, text, patterns).
+
+---
+
 ## PRE-FLIGHT CHECKLIST
 
 Evaluate every output against this matrix before delivering:
