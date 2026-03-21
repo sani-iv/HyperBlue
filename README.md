@@ -66,7 +66,8 @@ You describe your project
   Bento grids, scroll animations, 3D scenes, creative arsenal
         |
         v
-  Premium, brand-specific frontend code
+  Design system + multi-page site (not a single-page landing page)
+  Foundation first → pages one by one → expandable for the future
         |
         v
   Phase 6: REFINEMENT (on existing code)
@@ -200,12 +201,36 @@ YOU:  Build a website for a luxury perfume e-commerce brand based in Dubai.
 │  ✓ Phase 2 complete — tokens locked. Now writing code.               │
 └───────────────────────────────────────────────────────────────────────┘
 
-┌─ PHASES 3-5: BUILD ──────────────────────────────────────────────────┐
+┌─ PHASE 3: FOUNDATION ─────────────────────────────────────────────────┐
 │                                                                       │
-│  Claude writes production code using your confirmed tokens, sitemap, │
-│  brand voice, competitive anchors, and sourced assets. Core engine   │
-│  rules, design layers, and extensions all reference the token system │
-│  — nothing is hardcoded or generic.                                  │
+│  CLAUDE: Before building pages, I'll set up the design system:       │
+│                                                                       │
+│  1. Token file — globals.css with all --brand-* custom properties    │
+│  2. Next.js routing — app/ directory matching your sitemap           │
+│  3. Shared components — Navigation, Footer, Section, Button, Card    │
+│  4. Root layout — fonts, metadata, dark mode toggle                  │
+│                                                                       │
+│  [Creates the foundation files]                                      │
+│                                                                       │
+│  ✓ Foundation complete. Which page should I build first?             │
+│                                                                       │
+│  YOU: Start with the homepage.                                       │
+│                                                                       │
+└───────────────────────────────────────────────────────────────────────┘
+
+┌─ PHASES 4-5: PAGE-BY-PAGE BUILD ─────────────────────────────────────┐
+│                                                                       │
+│  Claude builds each page using the shared design system. Every page  │
+│  imports the same tokens, nav, footer, and components — nothing is   │
+│  hardcoded. Pages are real Next.js routes, not sections on one page. │
+│                                                                       │
+│  CLAUDE: Homepage complete. Which page next?                         │
+│  YOU: Build the Collections page.                                    │
+│  CLAUDE: Done. Which page next?                                      │
+│  YOU: That's enough for now — I'll come back for the rest later.     │
+│                                                                       │
+│  Remaining sitemap routes keep placeholder pages styled with your    │
+│  brand tokens. The foundation is ready to expand whenever you are.   │
 │                                                                       │
 └───────────────────────────────────────────────────────────────────────┘
 ```
@@ -213,6 +238,52 @@ YOU:  Build a website for a luxury perfume e-commerce brand based in Dubai.
 **What if you want to skip ahead?** You can say "just build it" at any point. HyperBlue will compress the remaining phases — making sensible defaults — but it will tell you what it assumed so you can course-correct.
 
 **What if you just need a single component?** For isolated components (a signup form, a pricing card), HyperBlue fast-tracks: it runs brand intake and token generation, then builds. No competitive research or sitemap needed.
+
+## Design System First
+
+HyperBlue doesn't build single-page landing pages (unless you explicitly ask for one). It builds a **design system foundation** that supports a full multi-page site.
+
+### What gets created before any page content
+
+| File | Purpose |
+|---|---|
+| `globals.css` | All `--brand-*` custom properties from Phase 2 tokens — colors, typography, spacing, shadows, dark mode |
+| `tailwind.config.ts` | Theme extensions referencing the token file |
+| `app/layout.tsx` | Root layout with font loading, metadata, theme provider |
+| `app/` route folders | One folder per sitemap route, each with a `page.tsx` |
+| `components/Navigation` | Responsive nav with links derived from the sitemap |
+| `components/Footer` | Sitemap-derived link groups and brand info |
+| `components/Section` | Reusable section wrapper with consistent spacing |
+| `components/Button` | Primary, secondary, ghost variants using tokens |
+| `components/Card` | Branded card component (if the design uses cards) |
+
+### Why this matters
+
+- **Every page is a real Next.js route** — `/about` is `app/about/page.tsx`, not a `<section id="about">` on a single page.
+- **Pages share the design system** — nav, footer, tokens, and base components are defined once and imported everywhere.
+- **Expandable** — you can build 2 pages today and add the rest next week. The foundation, routing, and shared components are already in place.
+- **Consistent** — because everything references the same token file, new pages automatically match the brand without re-establishing colors, fonts, or spacing.
+
+### How to expand later
+
+Come back in a future session and say:
+
+```
+Build the /about page. The design system and shared components
+are already set up — just add the page content.
+```
+
+```
+Add a /blog section with a list page and individual post pages.
+Follow the existing design system and token file.
+```
+
+```
+I need a /pricing page. Use the same components (Section, Button, Card)
+from the existing design system. Add a toggle for monthly/annual pricing.
+```
+
+HyperBlue will detect the existing foundation — tokens, shared components, layout — and build new pages on top of it without reinventing the system.
 
 ## Example Prompts
 
@@ -477,7 +548,13 @@ Yes. Give it a business description and it will research your industry's competi
 Instead of asking you to write paragraphs about your brand, HyperBlue presents selectable options at each step — brand personality, content density, competitor preferences, sitemap structure. You click choices rather than composing answers.
 
 **Does it generate a sitemap?**
-Yes. After discovery, HyperBlue proposes 2-3 sitemap variations (minimal, standard, comprehensive) based on your industry and competitors. The selected sitemap maps directly to your Next.js `app/` directory routing structure.
+Yes. After discovery, HyperBlue proposes 2-3 sitemap variations (minimal, standard, comprehensive) based on your industry and competitors. The selected sitemap maps directly to your Next.js `app/` directory routing structure — each route becomes a real `page.tsx`, not a section on a single page.
+
+**Does it build multi-page sites or just landing pages?**
+Multi-page by default. HyperBlue creates a design system foundation (tokens, shared components, routing scaffold) first, then builds pages one by one from the sitemap. You can build 2 pages today and come back for the rest later — the foundation is already in place. If you explicitly ask for a single-page/one-pager, it will build that instead.
+
+**Can I expand the site later?**
+Yes — that's the point of the design system approach. The token file, shared components (nav, footer, buttons, cards), and routing structure persist. In a future session, just say "build the /about page" and HyperBlue picks up the existing foundation without re-doing discovery.
 
 **What stack does it target?**
 React and Next.js with Tailwind CSS by default. It respects your existing project setup — if you're on Tailwind v3 it won't use v4 syntax, and it checks your `package.json` before importing any library.

@@ -25,7 +25,40 @@ Every full build follows this sequence. Each phase has a gate — a deliverable 
 | **1D. Sitemap Architecture** | Present 2-3 sitemap variations. User selects one. Output the finalized sitemap as a structured tree. |
 | **1E. Asset Sourcing** | List the image/video subjects needed and confirm sourcing direction. If user supplies their own assets, acknowledge and skip. |
 | **2. Brand Tokens** | Output the complete token set (colors, typography, spacing, shapes, shadows, dark mode). User confirms or adjusts before any code is written. |
-| **3-5. Build** | Now write code. Apply core engine rules, design layers, and extensions using the confirmed tokens and sitemap. |
+| **3. Foundation** | Scaffold the design system, routing structure, and shared components (see Build Strategy below). User confirms the foundation before individual pages are built. |
+| **4-5. Pages** | Build pages from the sitemap one by one, reusing the design system. Ask the user which page to build first. |
+
+**Build Strategy — how the sitemap becomes a real multi-page site:**
+
+The build phase is NOT "write one long landing page." It follows a strict foundation-first, pages-second order:
+
+**Step 1: Design System Foundation** (always built first)
+- **Token file:** Create a CSS/Tailwind token file that codifies all Phase 2 tokens (`globals.css` with `--brand-*` custom properties, or `tailwind.config` theme extensions). This is the single source of truth for the entire site.
+- **Next.js routing scaffold:** Create the `app/` directory structure matching the confirmed sitemap. Every route gets at minimum a `page.tsx` with a placeholder that imports the shared layout. Dynamic routes get their `[slug]` folders.
+- **Root layout:** `app/layout.tsx` with font loading, metadata, theme provider, and the token file imported.
+- **Shared components:** Build these before any page content:
+  - `Navigation` — responsive nav derived from the sitemap (all routes become nav links or grouped under dropdowns). Hamburger/sheet on mobile.
+  - `Footer` — sitemap-derived link groups, brand info, legal links.
+  - `Section` — reusable section wrapper with consistent spacing rhythm (`py-16 md:py-24`), max-width container, and optional background variants.
+  - `Button` — primary, secondary, ghost variants using brand tokens.
+  - `Card` — if the design uses cards, a branded card with consistent radii, shadow, and padding.
+  - `Typography` — heading and body text components with the brand's type scale baked in (optional but recommended for large sites).
+- **Dark mode toggle** — if dark mode was defined in tokens, wire it up in the layout.
+
+**Step 2: Page-by-Page Build**
+- After the foundation is confirmed, ask the user: "Which page should I build first?" Default suggestion: homepage.
+- Each page imports and composes the shared components. Page-specific sections are built as local components within that route.
+- Every page uses the design tokens — no hardcoded colors, fonts, or spacing.
+- Internal links between pages use the sitemap routes (`<Link href="/about">`), not anchor links to sections on the same page.
+- After each page is complete, ask: "Page done. Which page next?" Continue until the user stops or all sitemap pages are built.
+
+**Step 3: What if the user only wants one page right now?**
+- Build the full foundation (Step 1) regardless — it's the design system investment.
+- Build the requested page (Step 2).
+- The remaining sitemap routes keep their placeholder `page.tsx` files with a consistent "Coming Soon" or skeleton state using the brand's design tokens.
+- The user can return in a future session and say "build the /about page" — the foundation, tokens, nav, and footer are already in place.
+
+**CRITICAL: Never flatten the sitemap into a single scrolling page.** If the sitemap has `/about`, `/services`, `/contact` as separate routes, they must be separate Next.js routes with their own `page.tsx` files — not sections within a single-page layout. The only exception is if the user explicitly asks for a single-page/one-pager.
 
 **How to enforce this in practice:**
 - After completing each gate, explicitly tell the user which phase you just finished and which phase comes next: "Phase 1A complete — competitive anchors locked. Moving to Phase 1B: Brand Intake."
